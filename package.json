@@ -38,7 +38,7 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "build": "tsc && tsc-alias",
+    "build": "tsc -p tsconfig.build.json",
     "build:watch": "tsc --watch",
     "clean": "rimraf dist",
     "dev": "npm run build:watch",

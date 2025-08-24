@@ -10,7 +10,6 @@
     "esModuleInterop": true,
     "baseUrl": "./",
     "outDir": "./dist",
-    "paths": {"make-api-request-js": ["src/index.ts"], "make-api-request-js/*": ["src/*"]},
     "rootDir": "./",
     "declarationDir": "./dist",
     "declaration": true,

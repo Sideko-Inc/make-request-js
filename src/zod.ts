@@ -1,4 +1,4 @@
-import * as z from "zod";
+import z from "zod";
 import { isUploadFile, type UploadFile } from "./form-data";
 
 /**
