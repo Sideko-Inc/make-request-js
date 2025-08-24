@@ -15,12 +15,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-username/make-api-request-js.git"
+    "url": "git+https://github.com/sideko-inc/make-api-request-js.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/make-api-request-js/issues"
+    "url": "https://github.com/sideko-inc/make-api-request-js/issues"
   },
-  "homepage": "https://github.com/your-username/make-api-request-js#readme",
+  "homepage": "https://github.com/sideko-inc/make-api-request-js#readme",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -53,7 +53,9 @@
     "ci": "pnpm lint && pnpm typecheck && pnpm test:coverage",
     "prepare": "pnpm build",
     "prepublishOnly": "pnpm ci",
-    "release": "pnpm publish"
+    "release": "pnpm publish",
+    "version": "echo \"Use './release.sh patch|minor|major' to release\"",
+    "check": "pnpm lint && pnpm typecheck"
   },
   "dependencies": {
     "form-data": "^4.0.0",
