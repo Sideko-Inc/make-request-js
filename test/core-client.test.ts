@@ -2,9 +2,9 @@ import { CoreClient, ApiError, CoreResourceClient } from '../src/index';
 import { RUNTIME } from '../src/runtime';
 
 // Mock node-fetch
+import nodeFetch from 'node-fetch';
 jest.mock('node-fetch');
-const mockFetch = jest.fn();
-require('node-fetch').default = mockFetch;
+const mockFetch = nodeFetch as jest.MockedFunction<typeof nodeFetch>;
 
 describe('CoreClient', () => {
   let client: CoreClient;
@@ -54,7 +54,7 @@ describe('CoreClient', () => {
     };
 
     beforeEach(() => {
-      mockFetch.mockResolvedValue(mockResponse);
+      mockFetch.mockResolvedValue(mockResponse as any);
     });
 
     it('should make GET request successfully', async () => {
@@ -119,7 +119,7 @@ describe('CoreClient', () => {
         status: 404,
         statusText: 'Not Found'
       };
-      mockFetch.mockResolvedValue(errorResponse);
+      mockFetch.mockResolvedValue(errorResponse as any);
 
       const promise = client.makeRequest({
         method: 'get',

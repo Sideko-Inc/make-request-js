@@ -65,7 +65,7 @@ describe('zod utilities', () => {
         public: 'visible',
         standard: 'normal'
       });
-      expect(result.privateField).toBeUndefined();
+      expect(result['privateField']).toBeUndefined();
     });
 
     it('should handle empty objects', () => {

@@ -1,5 +1,6 @@
 import type * as z from "zod";
 import type { Response as NodeResponse } from "node-fetch";
+import nodeFetch from "node-fetch";
 
 import type { AuthProvider } from "./auth";
 import { RUNTIME } from "./runtime";
@@ -184,7 +185,7 @@ export class CoreClient {
   private async request(cfg: RequestConfig): Promise<ApiResponse> {
     const fetcherFn =
       RUNTIME.type === "node" || typeof fetch !== "function"
-        ? require("node-fetch").default
+        ? nodeFetch
         : fetch;
 
     cfg = await this.applyAuths(cfg);
@@ -199,14 +200,14 @@ export class CoreClient {
     }
     reqInit.signal = controller.signal;
 
-    const response = await fetcherFn(url, reqInit);
+    const response = await fetcherFn(url, reqInit as any);
 
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
 
     if (!response.ok) {
-      throw new ApiError(cfg, response);
+      throw new ApiError(cfg, response as any);
     }
 
     return response;

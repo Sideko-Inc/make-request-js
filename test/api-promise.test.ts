@@ -310,20 +310,8 @@ describe('ApiPromise', () => {
   });
 
   describe('streaming functionality', () => {
-    let mockStreamResponse: any;
-
     beforeEach(() => {
-      const mockStreamResponse = {
-        ok: true,
-        status: 200,
-        headers: {
-          get: jest.fn().mockReturnValue('text/event-stream')
-        },
-        body: {
-          pipe: jest.fn(),
-          getReader: jest.fn()
-        }
-      };
+      // Setup for each test
     });
 
     it('should handle Node.js stream responses', async () => {

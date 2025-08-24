@@ -2,9 +2,9 @@ import { AuthBasic, AuthBearer, AuthKey, OAuth2 } from '../src/auth';
 import type { RequestConfig } from '../src/core-client';
 
 // Mock node-fetch
+import nodeFetch from 'node-fetch';
 jest.mock('node-fetch');
-const mockNodeFetch = jest.fn();
-require('node-fetch').default = mockNodeFetch;
+const mockNodeFetch = nodeFetch as jest.MockedFunction<typeof nodeFetch>;
 
 describe('Auth providers', () => {
   describe('AuthBasic', () => {
@@ -171,7 +171,7 @@ describe('Auth providers', () => {
             expires_in: 3600
           })
         };
-        mockNodeFetch.mockResolvedValue(mockTokenResponse);
+        mockNodeFetch.mockResolvedValue(mockTokenResponse as any);
 
         const auth = new OAuth2({
           baseUrl: 'https://auth.example.com',
@@ -214,7 +214,7 @@ describe('Auth providers', () => {
             expires_in: 3600
           })
         };
-        mockNodeFetch.mockResolvedValue(mockTokenResponse);
+        mockNodeFetch.mockResolvedValue(mockTokenResponse as any);
 
         const auth = new OAuth2({
           baseUrl: 'https://auth.example.com',
@@ -256,7 +256,7 @@ describe('Auth providers', () => {
             expires_in: 7200
           })
         };
-        mockNodeFetch.mockResolvedValue(mockTokenResponse);
+        mockNodeFetch.mockResolvedValue(mockTokenResponse as any);
 
         const auth = new OAuth2({
           baseUrl: 'https://auth.example.com',
@@ -298,7 +298,7 @@ describe('Auth providers', () => {
             error_description: 'Invalid client credentials'
           })
         };
-        mockNodeFetch.mockResolvedValue(mockErrorResponse);
+        mockNodeFetch.mockResolvedValue(mockErrorResponse as any);
 
         const auth = new OAuth2({
           baseUrl: 'https://auth.example.com',
@@ -327,7 +327,7 @@ describe('Auth providers', () => {
             expires_in: 1800
           })
         };
-        mockNodeFetch.mockResolvedValue(mockTokenResponse);
+        mockNodeFetch.mockResolvedValue(mockTokenResponse as any);
 
         const auth = new OAuth2({
           baseUrl: 'https://custom-auth.com',
@@ -364,7 +364,7 @@ describe('Auth providers', () => {
             scope: 'read write'
           })
         };
-        mockNodeFetch.mockResolvedValue(mockTokenResponse);
+        mockNodeFetch.mockResolvedValue(mockTokenResponse as any);
 
         const auth = new OAuth2({
           baseUrl: 'https://auth.example.com',
@@ -402,7 +402,7 @@ describe('Auth providers', () => {
             expires_in: 3600
           })
         };
-        mockNodeFetch.mockResolvedValue(mockTokenResponse);
+        mockNodeFetch.mockResolvedValue(mockTokenResponse as any);
 
         const auth = new OAuth2({
           baseUrl: 'https://auth.example.com',
@@ -441,7 +441,7 @@ describe('Auth providers', () => {
             expires_in: 3600
           })
         };
-        mockNodeFetch.mockResolvedValue(mockTokenResponse);
+        mockNodeFetch.mockResolvedValue(mockTokenResponse as any);
 
         const auth = new OAuth2({
           baseUrl: 'https://auth.example.com',
@@ -488,7 +488,7 @@ describe('Auth providers', () => {
 
         expect(() => {
           auth.setValue('manual-token');
-        }).toThrow('an OAuth2 auth provider can not a requestMutator');
+        }).toThrow('an OAuth2 auth provider cannot be used as a requestMutator');
       });
     });
 
@@ -501,7 +501,7 @@ describe('Auth providers', () => {
             expires_in: 3600
           })
         };
-        mockNodeFetch.mockResolvedValue(mockTokenResponse);
+        mockNodeFetch.mockResolvedValue(mockTokenResponse as any);
 
         const auth = new OAuth2({
           baseUrl: 'https://auth.example.com',
@@ -538,7 +538,7 @@ describe('Auth providers', () => {
             expires_in: 3600
           })
         };
-        mockNodeFetch.mockResolvedValue(mockTokenResponse);
+        mockNodeFetch.mockResolvedValue(mockTokenResponse as any);
 
         const auth = new OAuth2({
           baseUrl: 'https://auth.example.com',

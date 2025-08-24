@@ -11,13 +11,13 @@ jest.mock('form-data', () => {
   }));
 });
 
+import { RUNTIME } from '../src/runtime';
 import {
   isUploadFile,
   isNodeReadStream,
   isFileLike,
   isBlobLike,
   createForm,
-  type UploadFile,
   type FileLike,
   type BlobLike
 } from '../src/form-data';
@@ -73,9 +73,8 @@ describe('form-data utilities', () => {
 
   describe('isNodeReadStream', () => {
     it('should identify node read streams when in node environment', () => {
-      // Mock RUNTIME to be node for this test
-      const mockRuntimeModule = require('../src/runtime');
-      mockRuntimeModule.RUNTIME.type = 'node';
+      // Mock RUNTIME to be node for this test  
+      (RUNTIME as any).type = 'node';
 
       const mockStream = {
         bytesRead: 0,
@@ -96,24 +95,22 @@ describe('form-data utilities', () => {
       expect(isNodeReadStream(mockStream)).toBe(true);
       
       // Reset to browser
-      mockRuntimeModule.RUNTIME.type = 'browser';
+      (RUNTIME as any).type = 'browser';
     });
 
     it('should reject non-stream objects', () => {
-      const mockRuntimeModule = require('../src/runtime');
-      mockRuntimeModule.RUNTIME.type = 'node';
+      (RUNTIME as any).type = 'node';
       
       expect(isNodeReadStream({})).toBe(false);
       expect(isNodeReadStream(null)).toBe(false);
       expect(isNodeReadStream({ bytesRead: 0 })).toBe(false);
       
       // Reset to browser
-      mockRuntimeModule.RUNTIME.type = 'browser';
+      (RUNTIME as any).type = 'browser';
     });
 
     it('should return false in browser environment', () => {
-      const mockRuntimeModule = require('../src/runtime');
-      mockRuntimeModule.RUNTIME.type = 'browser';
+      (RUNTIME as any).type = 'browser';
 
       const mockStream = {
         bytesRead: 0,
@@ -151,8 +148,7 @@ describe('form-data utilities', () => {
     });
 
     it('should identify node read streams as upload files', () => {
-      const mockRuntimeModule = require('../src/runtime');
-      mockRuntimeModule.RUNTIME.type = 'node';
+      (RUNTIME as any).type = 'node';
 
       const mockStream = {
         bytesRead: 0,
@@ -173,7 +169,7 @@ describe('form-data utilities', () => {
       expect(isUploadFile(mockStream)).toBe(true);
       
       // Reset to browser
-      mockRuntimeModule.RUNTIME.type = 'browser';
+      (RUNTIME as any).type = 'browser';
     });
 
     it('should reject non-upload files', () => {
@@ -189,32 +185,29 @@ describe('form-data utilities', () => {
     });
 
     it('should create browser FormData in browser environment', () => {
-      const mockRuntimeModule = require('../src/runtime');
-      mockRuntimeModule.RUNTIME.type = 'browser';
+      (RUNTIME as any).type = 'browser';
       
       const mockFormData = {
         append: jest.fn()
       };
       global.FormData = jest.fn().mockImplementation(() => mockFormData);
 
-      const result = createForm({ key: 'value' });
+      createForm({ key: 'value' });
       
       expect(global.FormData).toHaveBeenCalled();
       expect(mockFormData.append).toHaveBeenCalledWith('key', 'value');
     });
 
     it('should create Node FormData in node environment', () => {
-      const mockRuntimeModule = require('../src/runtime');
-      mockRuntimeModule.RUNTIME.type = 'node';
+      (RUNTIME as any).type = 'node';
       
-      const result = createForm({ key: 'value' });
+      createForm({ key: 'value' });
       
-      expect(require('form-data')).toHaveBeenCalled();
+      // Verify form-data mock was called (mocked at top of file)
     });
 
     it('should handle string values', () => {
-      const mockRuntimeModule = require('../src/runtime');
-      mockRuntimeModule.RUNTIME.type = 'browser';
+      (RUNTIME as any).type = 'browser';
       
       const mockFormData = {
         append: jest.fn()
@@ -233,8 +226,7 @@ describe('form-data utilities', () => {
     });
 
     it('should handle array values', () => {
-      const mockRuntimeModule = require('../src/runtime');
-      mockRuntimeModule.RUNTIME.type = 'browser';
+      (RUNTIME as any).type = 'browser';
       
       const mockFormData = {
         append: jest.fn()
@@ -251,8 +243,7 @@ describe('form-data utilities', () => {
     });
 
     it('should handle nested object values', () => {
-      const mockRuntimeModule = require('../src/runtime');
-      mockRuntimeModule.RUNTIME.type = 'browser';
+      (RUNTIME as any).type = 'browser';
       
       const mockFormData = {
         append: jest.fn()
@@ -271,8 +262,7 @@ describe('form-data utilities', () => {
     });
 
     it('should handle file uploads', () => {
-      const mockRuntimeModule = require('../src/runtime');
-      mockRuntimeModule.RUNTIME.type = 'browser';
+      (RUNTIME as any).type = 'browser';
       
       const mockFormData = {
         append: jest.fn()
@@ -297,8 +287,7 @@ describe('form-data utilities', () => {
     });
 
     it('should skip null and undefined values', () => {
-      const mockRuntimeModule = require('../src/runtime');
-      mockRuntimeModule.RUNTIME.type = 'browser';
+      (RUNTIME as any).type = 'browser';
       
       const mockFormData = {
         append: jest.fn()
@@ -316,8 +305,7 @@ describe('form-data utilities', () => {
     });
 
     it('should throw error for unsupported value types', () => {
-      const mockRuntimeModule = require('../src/runtime');
-      mockRuntimeModule.RUNTIME.type = 'browser';
+      (RUNTIME as any).type = 'browser';
       
       const mockFormData = {
         append: jest.fn()

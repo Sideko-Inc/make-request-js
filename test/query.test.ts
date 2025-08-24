@@ -1,4 +1,4 @@
-import { encodeQueryParam, type EncodeQueryParamProps, type QueryStyle } from '../src/query';
+import { encodeQueryParam, type QueryStyle } from '../src/query';
 
 describe('query parameter encoding', () => {
   describe('encodeQueryParam', () => {

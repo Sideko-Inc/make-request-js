@@ -1,4 +1,5 @@
 import type { ReadStream as NodeReadStream } from "node:fs";
+import NodeFormData from "form-data";
 import { RUNTIME } from "./runtime";
 
 export type UploadFile = FileLike | NodeReadStream;
@@ -70,7 +71,7 @@ export function isBlobLike(val: any): val is BlobLike {
   );
 }
 
-function appendFormData(form: any, key: string, val: unknown) {
+function appendFormData(form: any, key: string, val: unknown): void {
   if (val === null || typeof val === "undefined") {
     return;
   } else if (["string", "boolean", "number"].includes(typeof val)) {
@@ -86,14 +87,13 @@ function appendFormData(form: any, key: string, val: unknown) {
       appendFormData(form, `${key}[${objKey}]`, objVal);
     }
   } else {
-    throw new TypeError(`Invalid value given to form: ${val}`);
+    throw new TypeError(`Invalid value given to form: ${JSON.stringify(val)}`);
   }
 }
 
 export function createForm(data: { [key: string]: unknown }): any {
   let form;
   if (RUNTIME.type === "node") {
-    const NodeFormData = require("form-data");
     form = new NodeFormData();
   } else {
     form = new FormData();

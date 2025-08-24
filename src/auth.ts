@@ -2,6 +2,7 @@ import qs from "qs";
 import formUrlEncoded from "form-urlencoded";
 import { toBase64 } from "js-base64";
 import * as jsonpointer from "jsonpointer";
+import nodeFetch from "node-fetch";
 
 import { RUNTIME } from "./runtime";
 import type { RequestConfig } from "./core-client";
@@ -35,7 +36,7 @@ export class AuthBasic implements AuthProvider {
     return cfg;
   }
 
-  setValue(val?: string | undefined) {
+  setValue(val?: string | undefined): void {
     this.username = val ?? null;
   }
 }
@@ -57,7 +58,7 @@ export class AuthBearer implements AuthProvider {
     return cfg;
   }
 
-  setValue(val?: string | undefined) {
+  setValue(val?: string | undefined): void {
     this.token = val ?? null;
   }
 }
@@ -104,7 +105,7 @@ export class AuthKey implements AuthProvider {
     return cfg;
   }
 
-  setValue(val?: string | undefined) {
+  setValue(val?: string | undefined): void {
     this.key = val ?? null;
   }
 }
@@ -120,7 +121,7 @@ export type OAuth2Password = {
   password: string;
   clientId?: string | undefined;
   clientSecret?: string | undefined;
-  grantType?: "password" | string | undefined;
+  grantType?: "password" | undefined;
   scope?: string[] | undefined;
 
   tokenUrl?: string | undefined;
@@ -138,7 +139,7 @@ function isOAuth2Password(val: any): val is OAuth2Password {
 export type OAuth2ClientCredentials = {
   clientId: string;
   clientSecret: string;
-  grantType?: "client_credentials" | string | undefined;
+  grantType?: "client_credentials" | undefined;
   scope?: string[] | undefined;
 
   tokenUrl?: string | undefined;
@@ -194,7 +195,7 @@ export class OAuth2 implements AuthProvider {
       tokenUrl = `${base}${tokenUrl}`;
     }
 
-    let defaultGrantType = isOAuth2Password(form)
+    const defaultGrantType = isOAuth2Password(form)
       ? "password"
       : "client_credentials";
 
@@ -234,9 +235,9 @@ export class OAuth2 implements AuthProvider {
     reqInit.headers = reqHeaders;
     const fetcherFn =
       RUNTIME.type === "node" || typeof fetch !== "function"
-        ? require("node-fetch").default
+        ? nodeFetch
         : fetch;
-    const tokenRes = await fetcherFn(tokenUrl, reqInit);
+    const tokenRes = await fetcherFn(tokenUrl, reqInit as any);
     if (!tokenRes.ok) {
       throw new ApiError(
         {
@@ -246,7 +247,7 @@ export class OAuth2 implements AuthProvider {
           body: reqData,
           contentType: reqHeaders["content-type"],
         },
-        tokenRes,
+        tokenRes as any,
       );
     }
 
@@ -275,7 +276,7 @@ export class OAuth2 implements AuthProvider {
     return await this.props.requestMutator.applyAuth(cfg);
   }
 
-  setValue(val?: string | undefined) {
-    throw "an OAuth2 auth provider can not a requestMutator";
+  setValue(_val?: string | undefined): void {
+    throw new Error("an OAuth2 auth provider cannot be used as a requestMutator");
   }
 }

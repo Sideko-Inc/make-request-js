@@ -10,7 +10,7 @@ import { isUploadFile, type UploadFile } from "./form-data";
 export function zodTransform<
   Input extends Record<string, unknown>,
   const Transformer extends { [k in keyof Input]?: string | null },
->(input: Input, transformer: Transformer) {
+>(input: Input, transformer: Transformer): Record<string, unknown> {
   const transformed: any = {};
 
   for (const [key, val] of Object.entries(input)) {
