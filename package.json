@@ -15,12 +15,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sideko-inc/make-api-request-js.git"
+    "url": "git+https://github.com/Sideko-Inc/make-request-js.git"
   },
   "bugs": {
-    "url": "https://github.com/sideko-inc/make-api-request-js/issues"
+    "url": "https://github.com/Sideko-Inc/make-request-js/issues"
   },
-  "homepage": "https://github.com/sideko-inc/make-api-request-js#readme",
+  "homepage": "https://github.com/Sideko-Inc/make-request-js#readme",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
