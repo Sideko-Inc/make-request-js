@@ -73,7 +73,7 @@ pnpm test:watch
 
 ```bash
 # Run full CI pipeline (lint, typecheck, test, build)
-pnpm ci
+pnpm run ci-checks
 # or
 make ci
 

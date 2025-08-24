@@ -50,9 +50,9 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "typecheck": "tsc --noEmit",
-    "ci": "pnpm lint && pnpm typecheck && pnpm test:coverage",
+    "ci-checks": "pnpm lint && pnpm typecheck && pnpm test:coverage",
     "prepare": "pnpm build",
-    "prepublishOnly": "pnpm ci",
+    "prepublishOnly": "pnpm run ci-checks",
     "release": "pnpm publish",
     "version": "echo \"Use './release.sh patch|minor|major' to release\"",
     "check": "pnpm lint && pnpm typecheck"

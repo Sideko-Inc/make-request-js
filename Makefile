@@ -41,8 +41,6 @@ release-major:  ## Release major version (1.0.0 -> 2.0.0)
 	./release.sh major
 
 ci:  ## Run full CI pipeline (lint, typecheck, test, build)
-	pnpm lint
-	pnpm typecheck
-	pnpm test
+	pnpm run ci-checks
 	pnpm build
 	@echo "✅ All CI checks passed!"

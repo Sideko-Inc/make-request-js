@@ -194,17 +194,9 @@ Usage:
   // Update version in package.json
   updateVersionInPackage(newVersion);
 
-  // Run tests to make sure everything works
-  console.log('Running tests...');
-  runCommand('pnpm test');
-
-  // Run linting
-  console.log('Running linting...');
-  runCommand('pnpm lint');
-
-  // Run type checking
-  console.log('Running type checking...');
-  runCommand('pnpm typecheck');
+  // Run CI checks to make sure everything works
+  console.log('Running CI checks...');
+  runCommand('pnpm run ci-checks');
 
   // Build the project
   console.log('Building project...');
