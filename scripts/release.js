@@ -210,6 +210,15 @@ Usage:
   runCommand('git push origin main');
   runCommand(`git push origin ${tagName}`);
 
+  // Create GitHub release using gh CLI (if available)
+  try {
+    console.log('Creating GitHub release...');
+    runCommand(`gh release create ${tagName} --title "Release ${newVersion}" --notes "Release ${newVersion}" --latest`, { check: false });
+  } catch (error) {
+    console.log('⚠️  Could not create GitHub release automatically. You can create it manually at:');
+    console.log(`   https://github.com/sideko-inc/make-api-request-js/releases/new?tag=${tagName}`);
+  }
+
   console.log(`✅ Successfully created release ${newVersion}`);
   console.log('🚀 GitHub Actions will now build and publish to NPM');
   console.log(`📦 Check the release at: https://github.com/sideko-inc/make-api-request-js/releases/tag/${tagName}`);
