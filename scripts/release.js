@@ -166,6 +166,16 @@ Usage:
     process.exit(1);
   }
 
+  // Check current branch
+  const currentBranch = runCommand('git branch --show-current', { check: false, silent: true });
+  if (currentBranch.returncode === 0 && currentBranch.stdout.trim()) {
+    const branch = currentBranch.stdout.trim();
+    if (branch !== 'main') {
+      console.error(`Error: You are on branch '${branch}'. Please switch to main/master branch before releasing.`);
+      process.exit(1);
+    }
+  }
+
   // Get current version
   const currentVersion = getCurrentVersion();
   console.log(`Current version: ${currentVersion}`);
