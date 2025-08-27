@@ -441,7 +441,7 @@ describe("CoreClient", () => {
         })
       ).rejects.toThrow();
 
-      expect(mockFetch).toHaveBeenCalledTimes(2);
+      expect(mockFetch).toHaveBeenCalledTimes(3);
     });
 
     it("should not retry on non-retryable status codes", async () => {
@@ -503,7 +503,7 @@ describe("CoreClient", () => {
         })
       ).rejects.toThrow();
 
-      expect(mockFetch).toHaveBeenCalledTimes(2);
+      expect(mockFetch).toHaveBeenCalledTimes(3);
     });
   });
 

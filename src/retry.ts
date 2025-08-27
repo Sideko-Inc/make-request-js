@@ -66,7 +66,7 @@ export class RetryConfig {
     statusCode: number;
   }): boolean {
     return (
-      attempt < this.maxRetries &&
+      attempt <= this.maxRetries &&
       this.statusCodes.some((retryCode) =>
         this.matchesCode({ statusCode, retryCode })
       )
