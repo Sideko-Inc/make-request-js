@@ -36,7 +36,7 @@ function encodeForm(name: string, value: any, explode: boolean): string {
   if (Array.isArray(value)) {
     return qs.stringify(
       { [name]: value },
-      { arrayFormat: explode ? "repeat" : "comma" },
+      { arrayFormat: explode ? "repeat" : "comma" }
     );
   } else if (typeof value === "object" && value != null) {
     if (explode) {
@@ -49,7 +49,7 @@ function encodeForm(name: string, value: any, explode: boolean): string {
       // non-explode form objects should be encoded like /users?id=key0,val0,key1,val1
       return qs.stringify(
         { [name]: Object.entries(value).flat() },
-        { arrayFormat: "comma" },
+        { arrayFormat: "comma" }
       );
     }
   } else {
@@ -60,7 +60,7 @@ function encodeForm(name: string, value: any, explode: boolean): string {
 function encodeSpaceDelimited(
   name: string,
   value: any,
-  explode: boolean,
+  explode: boolean
 ): string {
   if (Array.isArray(value) && !explode) {
     // non-explode spaceDelimited arrays should be encoded like /users?id=3%204%205
@@ -76,7 +76,7 @@ function encodeSpaceDelimited(
 function encodePipeDelimited(
   name: string,
   value: any,
-  explode: boolean,
+  explode: boolean
 ): string {
   if (Array.isArray(value) && !explode) {
     // non-explode pipeDelimited arrays should be encoded like /users?id=3|4|5

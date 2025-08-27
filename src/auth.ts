@@ -71,7 +71,7 @@ export class AuthKey implements AuthProvider {
   constructor(
     name: string,
     location: "query" | "header" | "cookie",
-    key?: string,
+    key?: string
   ) {
     this.name = name;
     this.location = location;
@@ -176,7 +176,7 @@ export class OAuth2 implements AuthProvider {
   }
 
   async refresh(
-    form: OAuth2Password | OAuth2ClientCredentials,
+    form: OAuth2Password | OAuth2ClientCredentials
   ): Promise<{ accessToken: string; expiresAt: Date }> {
     const {
       baseUrl,
@@ -247,7 +247,7 @@ export class OAuth2 implements AuthProvider {
           body: reqData,
           contentType: reqHeaders["content-type"],
         },
-        tokenRes as any,
+        tokenRes as any
       );
     }
 
@@ -277,6 +277,8 @@ export class OAuth2 implements AuthProvider {
   }
 
   setValue(_val?: string | undefined): void {
-    throw new Error("an OAuth2 auth provider cannot be used as a requestMutator");
+    throw new Error(
+      "an OAuth2 auth provider cannot be used as a requestMutator"
+    );
   }
 }

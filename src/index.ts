@@ -21,4 +21,5 @@ export {
 export { createForm, isUploadFile, UploadFile } from "./form-data";
 export { encodeQueryParam } from "./query";
 export { RUNTIME } from "./runtime";
+export { RetryStrategy } from "./retry";
 export { zodRequiredAny, zodTransform, zodUploadFile } from "./zod";
