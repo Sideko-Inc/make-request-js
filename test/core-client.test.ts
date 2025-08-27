@@ -373,6 +373,140 @@ describe("CoreClient", () => {
     });
   });
 
+  describe("RetryStrategy", () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it("should retry on retryable status codes and succeed", async () => {
+      const failureResponse = {
+        ok: false,
+        status: 500,
+        statusText: "Internal Server Error",
+      };
+      const successResponse = {
+        ok: true,
+        json: jest.fn().mockResolvedValue({ success: true }),
+        text: jest.fn().mockResolvedValue("success"),
+        status: 200,
+        headers: {
+          get: jest.fn().mockReturnValue("application/json"),
+        },
+      };
+
+      mockFetch
+        .mockResolvedValueOnce(failureResponse as any)
+        .mockResolvedValueOnce(successResponse as any);
+
+      const clientWithRetries = new CoreClient({
+        baseUrl,
+        retries: {
+          maxRetries: 2,
+          statusCodes: [5],
+          initialDelay: 100,
+        },
+      });
+
+      const result = await clientWithRetries.makeRequest({
+        method: "get",
+        path: "/users",
+      });
+
+      expect(result).toEqual({ success: true });
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+    });
+
+    it("should exhaust max retries and throw error", async () => {
+      const failureResponse = {
+        ok: false,
+        status: 500,
+        statusText: "Internal Server Error",
+      };
+
+      mockFetch.mockResolvedValue(failureResponse as any);
+
+      const clientWithRetries = new CoreClient({
+        baseUrl,
+        retries: {
+          maxRetries: 2,
+          statusCodes: [5],
+          initialDelay: 100,
+        },
+      });
+
+      await expect(
+        clientWithRetries.makeRequest({
+          method: "get",
+          path: "/users",
+        })
+      ).rejects.toThrow();
+
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+    });
+
+    it("should not retry on non-retryable status codes", async () => {
+      const failureResponse = {
+        ok: false,
+        status: 404,
+        statusText: "Not Found",
+      };
+
+      mockFetch.mockResolvedValue(failureResponse as any);
+
+      const clientWithRetries = new CoreClient({
+        baseUrl,
+        retries: {
+          maxRetries: 3,
+          statusCodes: [5],
+          initialDelay: 100,
+        },
+      });
+
+      await expect(
+        clientWithRetries.makeRequest({
+          method: "get",
+          path: "/users",
+        })
+      ).rejects.toThrow();
+
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+    });
+
+    it("should override client retry config with request-level config", async () => {
+      const failureResponse = {
+        ok: false,
+        status: 409,
+        statusText: "Conflict",
+      };
+
+      mockFetch.mockResolvedValue(failureResponse as any);
+
+      const clientWithRetries = new CoreClient({
+        baseUrl,
+        retries: {
+          maxRetries: 5,
+          statusCodes: [5],
+        },
+      });
+
+      await expect(
+        clientWithRetries.makeRequest({
+          method: "post",
+          path: "/users",
+          opts: {
+            retries: {
+              maxRetries: 2,
+              statusCodes: [409],
+              initialDelay: 50,
+            },
+          },
+        })
+      ).rejects.toThrow();
+
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+    });
+  });
+
   describe("CoreResourceClient", () => {
     it("should create resource client with options", () => {
       const resourceClient = new CoreResourceClient(client, { lazyLoad: true });
