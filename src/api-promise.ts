@@ -62,13 +62,13 @@ export class ApiPromise<T>
       default:
         return new BinaryResponse(
           await response.blob(),
-          contentType,
+          contentType
         ) as unknown as T;
     }
   }
 
   private async *handleNodeStream(
-    stream: NodeJS.ReadableStream,
+    stream: NodeJS.ReadableStream
   ): AsyncIterableIterator<T> {
     const { responseSchema } = this.responseProps;
     const parser = new EventSourceParser();
@@ -87,7 +87,7 @@ export class ApiPromise<T>
   }
 
   private async *handleWebStream(
-    stream: ReadableStream<Uint8Array>,
+    stream: ReadableStream<Uint8Array>
   ): AsyncIterableIterator<T> {
     const { responseSchema } = this.responseProps;
     const reader = stream.getReader();
@@ -177,7 +177,7 @@ export class ApiPromise<T>
     onrejected?:
       | ((reason: any) => Result2 | PromiseLike<Result2>)
       | undefined
-      | null,
+      | null
   ): Promise<Result1 | Result2> {
     if (this.responseProps.responseStream) {
       return Promise.resolve(this.asEventStream() as unknown as Result1);
@@ -189,7 +189,7 @@ export class ApiPromise<T>
     onrejected?:
       | ((reason: any) => Result | PromiseLike<Result>)
       | undefined
-      | null,
+      | null
   ): Promise<T | Result> {
     return this.parseResponse().catch(onrejected);
   }

@@ -14,11 +14,13 @@ import {
   MULTIPART_FORM,
   URL_FORM,
 } from "./content-type";
+import { RetryStrategy, RetryConfig, sleep } from "./retry";
 
 export interface CoreClientProps {
   baseUrl: string | Record<string, string | undefined>;
   timeout?: number | undefined;
   auths?: Record<string, AuthProvider>;
+  retries?: RetryStrategy;
 }
 
 export type ApiResponse = Response | NodeResponse;
@@ -48,6 +50,7 @@ export interface RequestOptions {
   timeout?: number;
   additionalHeaders?: Record<string, string>;
   additionalQuery?: Record<string, string>;
+  retries?: RetryStrategy;
 }
 
 const _DEFAULT_SERVICE_NAME = "__default_service__";
@@ -56,6 +59,7 @@ export class CoreClient {
   private baseUrl: Record<string, string | undefined>;
   private auths: Record<string, AuthProvider>;
   private timeout: number | undefined;
+  private retries?: RetryStrategy | undefined;
 
   constructor(props: CoreClientProps) {
     this.baseUrl =
@@ -64,6 +68,7 @@ export class CoreClient {
         : props.baseUrl;
     this.auths = props.auths ?? {};
     this.timeout = props.timeout;
+    this.retries = props.retries;
   }
 
   private async applyAuths(cfg: RequestConfig): Promise<RequestConfig> {
@@ -116,7 +121,7 @@ export class CoreClient {
 
   private encodeBodyByContentType(
     cfg: RequestConfig,
-    reqInit: RequestInit,
+    reqInit: RequestInit
   ): RequestInit {
     const contentTypeOverride =
       cfg.opts?.additionalHeaders?.["content-type"] ??
@@ -136,9 +141,8 @@ export class CoreClient {
 
       if (RUNTIME.type === "node") {
         // explicitly set boundary
-        headers[
-          "content-type"
-        ] = `${MULTIPART_FORM}; boundary=${form.getBoundary()}`;
+        headers["content-type"] =
+          `${MULTIPART_FORM}; boundary=${form.getBoundary()}`;
       } else {
         // the browser should automatically set the content type
         delete headers["content-type"];
@@ -149,7 +153,7 @@ export class CoreClient {
     } else if (contentType === URL_FORM) {
       if (typeof cfg.body !== "object") {
         throw new TypeError(
-          "x-www-form-urlencoded data must be an object at the top level",
+          "x-www-form-urlencoded data must be an object at the top level"
         );
       }
 
@@ -182,17 +186,15 @@ export class CoreClient {
     return reqInit;
   }
 
-  private async request(cfg: RequestConfig): Promise<ApiResponse> {
-    const fetcherFn =
-      RUNTIME.type === "node" || typeof fetch !== "function"
-        ? nodeFetch
-        : fetch;
-
-    cfg = await this.applyAuths(cfg);
-    const reqInit = this.buildRequestInit(cfg);
-    const url = this.buildUrlFromCfg(cfg);
-
-    const timeout = cfg.opts?.timeout ?? this.timeout;
+  private async sendRequest({
+    url,
+    reqInit,
+    timeout,
+  }: {
+    url: string;
+    reqInit: RequestInit;
+    timeout?: number | undefined;
+  }): Promise<ApiResponse> {
     const controller = new AbortController();
     let timeoutId;
     if (typeof timeout !== "undefined") {
@@ -200,10 +202,39 @@ export class CoreClient {
     }
     reqInit.signal = controller.signal;
 
+    const fetcherFn =
+      RUNTIME.type === "node" || typeof fetch !== "function"
+        ? nodeFetch
+        : fetch;
     const response = await fetcherFn(url, reqInit as any);
 
     if (timeoutId) {
       clearTimeout(timeoutId);
+    }
+    return response;
+  }
+
+  private async request(cfg: RequestConfig): Promise<ApiResponse> {
+    cfg = await this.applyAuths(cfg);
+    const reqInit = this.buildRequestInit(cfg);
+    const url = this.buildUrlFromCfg(cfg);
+    const timeout = cfg.opts?.timeout ?? this.timeout;
+    const sendRequestData = { url, reqInit, timeout };
+
+    let response = await this.sendRequest(sendRequestData);
+    if (cfg.opts?.retries || this.retries) {
+      const retry = new RetryConfig({
+        override: cfg.opts?.retries,
+        base: this.retries,
+      });
+      let attempt = 1;
+      let delay = retry.initialDelay;
+      while (retry.shouldRetry({ attempt, statusCode: response.status })) {
+        await sleep(delay);
+        response = await this.sendRequest(sendRequestData);
+        delay = retry.calcNextDelay({ currDelay: delay });
+        attempt++;
+      }
     }
 
     if (!response.ok) {

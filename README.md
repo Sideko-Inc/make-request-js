@@ -1,6 +1,6 @@
 # make-api-request-js
 
-[![CI](https://github.com/sideko-inc/make-api-request-js/workflows/CI/badge.svg)](https://github.com/sideko-inc/make-api-request-js/actions)
+[![CI](https://github.com/sideko-inc/make-request-js/workflows/CI/badge.svg)](https://github.com/sideko-inc/make-request-js/actions)
 [![npm version](https://badge.fury.io/js/make-api-request-js.svg)](https://badge.fury.io/js/make-api-request-js)
 [![codecov](https://codecov.io/gh/sideko-inc/make-api-request-js/branch/main/graph/badge.svg)](https://codecov.io/gh/sideko-inc/make-api-request-js)
 

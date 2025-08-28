@@ -1,5 +1,3 @@
-
-
 import type { RequestConfig } from "./core-client";
 
 export class ApiError extends Error {
@@ -8,7 +6,7 @@ export class ApiError extends Error {
 
   constructor(request: RequestConfig, response: Response) {
     super(
-      `${response.status} was returned from ${request.method} ${request.path}`,
+      `${response.status} was returned from ${request.method} ${request.path}`
     );
     this.request = request;
     this.response = response;
