@@ -73,7 +73,10 @@ function getCurrentVersion() {
  * Bump version based on type (patch, minor, major)
  */
 function bumpVersion(current, bumpType) {
-  const parts = current.split(".").map((x) => parseInt(x));
+  const parts = current
+    .split(/[.\-]/)
+    .slice(0, 3)
+    .map((x) => parseInt(x));
 
   if (bumpType === "patch") {
     parts[2] += 1;
