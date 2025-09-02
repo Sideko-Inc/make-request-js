@@ -1,7 +1,6 @@
 {
   "name": "make-api-request-js",
   "version": "0.2.0",
-  "type": "module",
   "description": "Modern TypeScript HTTP client for browser and Node.js environments",
   "keywords": [
     "http",
