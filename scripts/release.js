@@ -9,14 +9,11 @@
  *   node scripts/release.js 1.2.3    # Set specific version
  */
 
-import { execSync } from "child_process";
-import { readFileSync, writeFileSync } from "fs";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
-import readline from "readline";
+const { execSync } = require("child_process");
+const { readFileSync, writeFileSync } = require("fs");
+const { join } = require("path");
+const readline = require("readline");
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 const projectRoot = join(__dirname, "..");
 
 /**
